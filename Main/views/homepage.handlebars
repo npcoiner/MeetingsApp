@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row">
+    <nav>
+      <select class="form-select" id="view-selector">
+        <option value="week" selected>Week</option>
+        <option value="month">Month</option>
+      </select>
+    </nav>
+  </div>
+  <div class="row">
+    {{!-- Columns for days of week/month--}}
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">25</div> <div class="day-name">Mon</div> </div> 
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">26</div> <div class="day-name">Tue</div> </div> 
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">27</div> <div class="day-name">Wed</div> </div> 
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date" style="display: none;">28</div> 
+        <div class="day-name" style="display: none;"> Thu</div> 
+        <div class="row-list" style="display: flex;">
+          <div class="row"><div class="time">6 AM</div></div>
+          <div class="row"><div class="time">7 AM</div></div>
+          <div class="row"><div class="time">8 AM</div></div>
+          <div class="row"><div class="time">9 AM</div></div>
+          <div class="row"><div class="time">10 AM</div></div>
+          <div class="row"><div class="time">11 AM</div></div>
+          <div class="row"><div class="time">12 AM</div></div>
+          <div class="row"><div class="time">1 AM</div></div>
+          <div class="row"><div class="time">2 AM</div></div>
+          <div class="row"><div class="time">3 AM</div></div>
+          <div class="row"><div class="time">4 AM</div></div>
+          <div class="row"><div class="time">5 AM</div></div>
+          <div class="row"><div class="time">6 AM</div></div>
+
+        </div>
+      </div> 
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">29</div> <div class="day-name">Fri</div> </div>  
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">1</div> <div class="day-name">Sat</div> </div> 
+    </div>
+    <div class="col-auto"> 
+      <div class="column-content">
+        <div class="day-date">2</div> <div class="day-name">Sun</div> </div> 
+    </div>
+  </div>
+</div>
+
+<script src="./js/homepage.js"></script>
