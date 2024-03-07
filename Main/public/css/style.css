@@ -79,3 +79,7 @@ nav {
 .row-list .row.highlighted {
   background-color: rgb(145, 145, 255); 
 }
+
+.row-list.has-highlighted {
+  display: flex; /* Always show if it has a highlighted row */
+}
