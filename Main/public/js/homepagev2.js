@@ -11,11 +11,15 @@ const calendarRow = document.getElementById('calendar-row');
 // Get the previous and next buttons
 const prevButton = document.getElementById('prev-button');
 const nextButton = document.getElementById('next-button');
-
+function updateMonthHeader() {
+    const monthElement = document.getElementById('month');
+    const monthName = currentDate.toLocaleDateString('en-US', { month: 'short' });
+    monthElement.textContent = `${monthName}`;
+}
 // Function to generate the calendar columns
 function generateCalendarColumns() {
     calendarRow.innerHTML = '';
-
+    updateMonthHeader()
     // Generate columns for the next 7 days
     for (let i = 0; i < 7; i++) {
         const date = new Date(currentDate);
@@ -54,16 +58,12 @@ function generateCalendarColumns() {
     const columnContent = document.querySelectorAll('.column-content');
     columnContent.forEach(column => {
         column.addEventListener('mouseenter', () => {
-            column.querySelector('.day-name').style.display = 'none';
-            column.querySelector('.day-date').style.display = 'none';
             column.querySelector('.row-list').style.display = 'flex';
         });
 
         column.addEventListener('mouseleave', () => {
             const rowList = column.querySelector('.row-list');
             if (!rowList.querySelector('.highlighted')) {
-                column.querySelector('.day-name').style.display = 'block';
-                column.querySelector('.day-date').style.display = 'block';
                 rowList.style.display = 'none';
             }
         });
@@ -144,42 +144,66 @@ function getHighlightedSlots() {
 }
 
 document.getElementById('create-meeting-button').addEventListener('click', async function() {
-    const currentWeek = getCurrentWeek();
-    const highlightedSlots = getHighlightedSlots();
-    console.log(highlightedSlots)
-    const meetingData = {
-        title: 'New Meeting',
-        description: 'Meeting description',
-        potential_times: highlightedSlots,
-    };
+    var name = prompt('Please enter your name:');
+    if (name) {
+        const highlightedSlots = getHighlightedSlots();
+        console.log(highlightedSlots);
+        const meetingData = {
+            title: 'New Meeting',
+            description: 'Meeting description',
+            potential_times: highlightedSlots,
+        };
 
-    try {
-        const response = await fetch('/api/meetings', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(meetingData)
-        });
-        if (response.ok) {
-            const createdMeeting = await response.json();
-            const meetingId = createdMeeting.id;
+        try {
+            const response = await fetch('/api/meetings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(meetingData)
+            });
+            if (response.ok) {
+                const createdMeeting = await response.json();
+                const meetingId = createdMeeting.hash;
 
-            // Generate the shareable meeting link
-            const meetingLink = `${window.location.origin}/meeting/${meetingId}`;
+                const userData = {
+                    name: name,
+                    meeting_hash: meetingId,
+                    potential_times: highlightedSlots,
+                };
 
-            // Display the meeting link to the user
-            alert(`Meeting created successfully! Share this link: ${meetingLink}`);
+                const userResponse = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
 
-            // Redirect the user to the meeting page
-            document.location.replace('/meeting/' + meetingId);
-        } else {
-            // Handle error response
-            console.error('Failed to create meeting');
-            alert('Please login');
+                if (userResponse.ok) {
+                    // Generate the shareable meeting link
+                    const meetingLink = `${window.location.origin}/meeting/${meetingId}`;
+
+                    // Display the meeting link to the user
+                    alert(`Meeting created successfully! Share this link: ${meetingLink}`);
+
+                    // Redirect the user to the meeting page
+                    document.location.replace('/meeting/' + meetingId);
+                } else {
+                    // Handle error response for user creation
+                    console.error('Failed to create user');
+                    alert('An error occurred while creating the user.');
+                }
+            } else {
+                // Handle error response for meeting creation
+                console.error('Failed to create meeting');
+                alert('Please login');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while creating the meeting. Please try again.');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while creating the meeting. Please try again.');
+    } else {
+        alert('Please enter your name to create a meeting.');
     }
 });

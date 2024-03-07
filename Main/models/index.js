@@ -1,13 +1,12 @@
 const User = require('./User');
 const Meeting = require('./Meeting');
+const UserMeeting = require('./UserMeeting');
 
-User.hasMany(Meeting, {
-  foreignKey: 'user_id',
-  onDelete: 'CASCADE'
-});
+User.belongsToMany(Meeting, { through: UserMeeting, foreignKey: 'user_id', otherKey: 'meeting_hash' });
+Meeting.belongsToMany(User, { through: UserMeeting, foreignKey: 'meeting_hash', otherKey: 'user_id' });
 
-Meeting.belongsTo(User, {
-  foreignKey: 'user_id'
-});
-
-module.exports = { User, Meeting };
+module.exports = {
+  User,
+  Meeting,
+  UserMeeting,
+};

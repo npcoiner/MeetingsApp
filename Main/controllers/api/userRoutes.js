@@ -1,18 +1,23 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, UserMeeting } = require('../../models');
 
 router.post('/', async (req, res) => {
   try {
-    const userData = await User.create(req.body);
+      const { name, meeting_hash, potential_times } = req.body;
 
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
+      // Create the user
+      const userData = await User.create({ name });
+
+      // Associate the user with the meeting
+      await UserMeeting.create({
+          user_id: userData.id,
+          meeting_hash,
+          potential_times,
+      });
 
       res.status(200).json(userData);
-    });
   } catch (err) {
-    res.status(400).json(err);
+      res.status(400).json(err);
   }
 });
 

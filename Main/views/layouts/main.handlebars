@@ -13,20 +13,15 @@
 <body>
   <div class="flex-column justify-space-around">
     <header class="display-flex justify-space-between align-center p-2">
+      <h1><a href = "/v2">EzMeets</a></h1>
       
       <nav>
         <!-- Conditionally render login or logout links -->
         <a href="/">v1</a> |
-        <a href="/v2">v2</a> |
-        {{#if logged_in}}
-        <a href="/profile">profile</a> |
-        <button class="no-button" id="logout">logout</button>
-        {{else}}
-        <a href="/login">login</a>
-        {{/if}}
+        <a href="/v2">v2</a>
       </nav>
     </header>
-    <main class="container container-fluid mt-5">
+    <main class="container container-fluid mt-5" style="box-shadow: 0 0 4px #000000;">
       <!-- Render the sub layout -->
       {{{ body }}}
     </main>

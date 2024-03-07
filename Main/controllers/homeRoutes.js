@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const { Meeting, User } = require('../models');
+const { Meeting, User, UserMeeting } = require('../models');
 const withAuth = require('../utils/auth');
+const crypto = require('crypto');
 
 router.get('/', async (req, res) => {
   try {
@@ -53,25 +54,34 @@ router.get('/v2', async (req, res) => {
   }
 });
 
-router.get('/meeting/:id', async (req, res) => {
+router.get('/meeting/:hash', async (req, res) => {
   try {
-    const meetingData = await Meeting.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          attributes: ['name'],
-        },
-      ],
+    const meetingData = await Meeting.findOne({
+      where: { hash: req.params.hash },
     });
 
-    const meeting = meetingData.get({ plain: true });
+    if (!meetingData) {
+      return res.status(404).render('404', { error: 'Meeting not found.' });
+    }
 
+    const userMeetingData = await UserMeeting.findAll({
+      where: { meeting_hash: meetingData.hash },
+      attributes: ['user_id', 'potential_times'],
+    });
+    console.log(userMeetingData);
+    const userIds = userMeetingData.map(userMeeting => userMeeting.user_id);
+    const potentialTimes = userMeetingData.map(userMeeting => userMeeting.potential_times);
+    
+    const userData = await User.findAll({
+      where: { id: userIds },
+      attributes: ['id', 'name'],
+    });
+    
     res.render('meeting', {
-      ...meeting,
-      title: meeting.title,
-      description: meeting.description,
-      start_date: meeting.start_date,
-      potential_times: JSON.stringify(meeting.potential_times),
+      ...meetingData.get({ plain: true }),
+      users: userData,
+      potentialTimes: JSON.stringify(potentialTimes),
+      startDate: meetingData.start_date,
       logged_in: req.session.logged_in,
       cssFile: 'style2.css',
     });

@@ -1,27 +1,15 @@
 <div class="container">
-  <div class="row">
-    <div class="col-auto">
-      <button id="prev-button">&lt;</button>
-    </div>
-    <div class="col">
-      <nav>
-        <select class="form-select" id="view-selector">
-          <option value="week" selected>Week</option>
-          <option value="month">Month</option>
-        </select>
-      </nav>
-    </div>
-    <div class="col-auto">
-      <button id="next-button">&gt;</button>
-    </div>
-  </div>
+    <h1>Select Times for a Meeting</h1>
+    <h1 id="month"></h1>
   <div class="row" id="calendar-row">
     <!-- Columns for days of week/month will be dynamically generated here -->
   </div>
   <div class="row">
     <div class="col text-center">
-      <button id="create-meeting-button">Create Meeting</button>
+      <button id="create-meeting-button" class="btn btn-primary">Create Meeting</button>
     </div>
   </div>
 </div>
+<button id="prev-button" class="btn btn-primary">&lt;</button>
+<button id="next-button" class="btn btn-primary">&gt;</button>
 <script src="./js/homepagev2.js"></script>
