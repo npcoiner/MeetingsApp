@@ -1,2 +1,2 @@
-DROP DATABASE IF EXISTS meetings_db;
-CREATE DATABASE meetings_db;
+DROP DATABASE IF EXISTS meetingsv3_db;
+CREATE DATABASE meetingsv3_db;
