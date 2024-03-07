@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const { Project, User } = require('../models');
+const { Meeting, User } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
-    // Get all projects and JOIN with user data
-    const projectData = await Project.findAll({
+    // Get all meetings and JOIN with user data
+    const meetingData = await Meeting.findAll({
       include: [
         {
           model: User,
@@ -15,11 +15,11 @@ router.get('/', async (req, res) => {
     });
 
     // Serialize data so the template can read it
-    const projects = projectData.map((project) => project.get({ plain: true }));
+    const meetings = meetingData.map((meeting) => meeting.get({ plain: true }));
 
     // Pass serialized data and session flag into template
     res.render('homepage', { 
-      projects, 
+      meetings, 
       logged_in: req.session.logged_in,
       cssFile: 'style.css'
     });
@@ -30,8 +30,8 @@ router.get('/', async (req, res) => {
 
 router.get('/v2', async (req, res) => {
   try {
-    // Get all projects and JOIN with user data
-    const projectData = await Project.findAll({
+    // Get all meetings and JOIN with user data
+    const meetingData = await Meeting.findAll({
       include: [
         {
           model: User,
@@ -41,10 +41,10 @@ router.get('/v2', async (req, res) => {
     });
 
     // Serialize data so the template can read it
-    const projects = projectData.map((project) => project.get({ plain: true }));
+    const meetings = meetingData.map((meeting) => meeting.get({ plain: true }));
     // Pass serialized data and session flag into template
     res.render('homepagev2', { 
-      projects, 
+      meetings, 
       logged_in: req.session.logged_in ,
       cssFile: 'style2.css' 
     });
@@ -53,9 +53,9 @@ router.get('/v2', async (req, res) => {
   }
 });
 
-router.get('/project/:id', async (req, res) => {
+router.get('/meeting/:id', async (req, res) => {
   try {
-    const projectData = await Project.findByPk(req.params.id, {
+    const meetingData = await Meeting.findByPk(req.params.id, {
       include: [
         {
           model: User,
@@ -64,15 +64,20 @@ router.get('/project/:id', async (req, res) => {
       ],
     });
 
-    const project = projectData.get({ plain: true });
+    const meeting = meetingData.get({ plain: true });
 
-    res.render('project', {
-      ...project,
+    res.render('meeting', {
+      ...meeting,
+      title: meeting.title,
+      description: meeting.description,
+      start_date: meeting.start_date,
+      potential_times: JSON.stringify(meeting.potential_times),
       logged_in: req.session.logged_in,
-      cssFile: 'style.css' 
+      cssFile: 'style2.css',
     });
   } catch (err) {
-    res.status(500).json(err);
+    console.error('Error fetching meeting:', err);
+    res.status(500).render('500', { error: 'An error occurred while fetching the meeting.' });
   }
 });
 
@@ -82,7 +87,7 @@ router.get('/profile', withAuth, async (req, res) => {
     // Find the logged in user based on the session ID
     const userData = await User.findByPk(req.session.user_id, {
       attributes: { exclude: ['password'] },
-      include: [{ model: Project }],
+      include: [{ model: Meeting }],
     });
 
     const user = userData.get({ plain: true });

@@ -108,3 +108,78 @@ function handleNextButtonClick() {
     currentDate.setDate(currentDate.getDate() + 7);
     generateCalendarColumns();
 }
+
+function getCurrentWeek() {
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    return {
+        start: startOfWeek.toISOString().split('T')[0],
+        end: endOfWeek.toISOString().split('T')[0]
+    };
+}
+
+function getHighlightedSlots() {
+    const highlightedSlots = [];
+
+    const highlightedRows = document.querySelectorAll('.row.highlighted');
+    highlightedRows.forEach(row => {
+        const dayElement = row.closest('.col-auto');
+        const date = new Date(currentDate);
+        date.setDate(currentDate.getDate() + Array.from(dayElement.parentNode.children).indexOf(dayElement));
+
+        const timeElement = row.querySelector('.time');
+        const time = timeElement.textContent.trim();
+
+        highlightedSlots.push({
+            date: date.toISOString().split('T')[0],
+            time: time
+        });
+    });
+
+    return highlightedSlots;
+}
+
+document.getElementById('create-meeting-button').addEventListener('click', async function() {
+    const currentWeek = getCurrentWeek();
+    const highlightedSlots = getHighlightedSlots();
+    console.log(highlightedSlots)
+    const meetingData = {
+        title: 'New Meeting',
+        description: 'Meeting description',
+        potential_times: highlightedSlots,
+    };
+
+    try {
+        const response = await fetch('/api/meetings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(meetingData)
+        });
+        if (response.ok) {
+            const createdMeeting = await response.json();
+            const meetingId = createdMeeting.id;
+
+            // Generate the shareable meeting link
+            const meetingLink = `${window.location.origin}/meeting/${meetingId}`;
+
+            // Display the meeting link to the user
+            alert(`Meeting created successfully! Share this link: ${meetingLink}`);
+
+            // Redirect the user to the meeting page
+            document.location.replace('/meeting/' + meetingId);
+        } else {
+            // Handle error response
+            console.error('Failed to create meeting');
+            alert('Please login');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while creating the meeting. Please try again.');
+    }
+});

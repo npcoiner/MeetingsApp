@@ -1,0 +1,39 @@
+<div class="container">
+  <h2>Meeting: {{title}}</h2>
+  <p>{{description}}</p>
+  
+  <div class="row">
+    <div class="col-auto">
+      <button id="prev-button" class="btn btn-primary">&lt;</button>
+    </div>
+    <div class="col">
+      <nav>
+        <select class="form-select" id="view-selector">
+          <option value="week" selected>Week</option>
+          <option value="month">Month</option>
+        </select>
+      </nav>
+    </div>
+    <div class="col-auto">
+      <button id="next-button" class="btn btn-primary">&gt;</button>
+    </div>
+  </div>
+  
+   <div class="row" id="calendar-row">
+    <!-- Columns for days of week/month will be dynamically generated here -->
+  </div>
+  
+  <div class="row">
+    <div class="col text-center">
+      <button id="update-availability-button" class="btn btn-primary">Update Availability</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var startDate = "{{start_date}}";
+  var potentialTimes = {{{potential_times}}};
+
+</script>
+
+<script src="/js/meeting.js"></script>
