@@ -20,7 +20,8 @@ router.get('/', async (req, res) => {
     // Pass serialized data and session flag into template
     res.render('homepage', { 
       projects, 
-      logged_in: req.session.logged_in 
+      logged_in: req.session.logged_in,
+      cssFile: 'style.css'
     });
   } catch (err) {
     res.status(500).json(err);
@@ -41,11 +42,11 @@ router.get('/v2', async (req, res) => {
 
     // Serialize data so the template can read it
     const projects = projectData.map((project) => project.get({ plain: true }));
-
     // Pass serialized data and session flag into template
     res.render('homepagev2', { 
       projects, 
-      logged_in: req.session.logged_in 
+      logged_in: req.session.logged_in ,
+      cssFile: 'style2.css' 
     });
   } catch (err) {
     res.status(500).json(err);
@@ -67,7 +68,8 @@ router.get('/project/:id', async (req, res) => {
 
     res.render('project', {
       ...project,
-      logged_in: req.session.logged_in
+      logged_in: req.session.logged_in,
+      cssFile: 'style.css' 
     });
   } catch (err) {
     res.status(500).json(err);
@@ -87,7 +89,8 @@ router.get('/profile', withAuth, async (req, res) => {
 
     res.render('profile', {
       ...user,
-      logged_in: true
+      logged_in: true,
+      cssFile: 'style.css'
     });
   } catch (err) {
     res.status(500).json(err);
@@ -101,7 +104,9 @@ router.get('/login', (req, res) => {
     return;
   }
 
-  res.render('login');
+  res.render('login', {
+    cssFile: 'style.css'
+  });
 });
 
 module.exports = router;
