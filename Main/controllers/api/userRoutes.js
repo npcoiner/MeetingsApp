@@ -7,17 +7,23 @@ router.post('/', async (req, res) => {
 
       // Create the user
       const userData = await User.create({ name });
-
+      console.log(potential_times);
+      console.log(userData.id);
+      console.log(meeting_hash);
       // Associate the user with the meeting
-      await UserMeeting.create({
+      const userMeetingData = await UserMeeting.create({
           user_id: userData.id,
           meeting_hash,
           potential_times,
       });
+      console.log(userMeetingData);
 
       res.status(200).json(userData);
   } catch (err) {
-      res.status(400).json(err);
+    console.error('Error creating user meeting:', err);
+    console.error('Error details:', err.message);
+    console.error('Error stack trace:', err.stack);
+    res.status(400).json({ error: 'An error occurred while creating the user meeting.', details: err.message });
   }
 });
 
