@@ -199,4 +199,37 @@ document
       participantsContainer.style.display = 'none';
       this.textContent = 'Show Participants';
     }
+  }
+);
+
+  document.getElementById('zoom-meeting-button').addEventListener('click', async function () {
+    if (potentialTimes.length === 0) {
+      alert('No common time slots available to create a Zoom meeting.');
+      return;
+    }
+  
+    const selectedTime = potentialTimes[0];
+    const meetingHash = window.location.pathname.split('/').pop();
+  
+    try {
+      const response = await fetch(`/api/meetings/${meetingHash}/zoom`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ commonTimes: [selectedTime] }),
+      });
+  
+      if (response.ok) {
+        const zoomMeetingData = await response.json();
+        // Handle the Zoom meeting data (e.g., display the join URL)
+        alert(`Zoom meeting created successfully! Link: ${zoomMeetingData.join_url}`);
+      } else {
+        console.error('Failed to create Zoom meeting');
+        alert('An error occurred while creating the Zoom meeting.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while creating the Zoom meeting. Please try again.');
+    }
   });

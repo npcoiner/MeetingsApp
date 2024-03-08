@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Meeting, User, UserMeeting } = require('../../models');
 const withAuth = require('../../utils/auth');
+const { createMeeting } = require('../../utils/zoomHelper');
 const crypto = require('crypto');
 
 const generateHash = () => {
@@ -30,16 +31,21 @@ router.post('/', withAuth, async (req, res) => {
   }
 });
 
-router.get('/:hash/common-times', async (req, res) => {
+
+router.post('/:hash/zoom', async (req, res) => {
   try {
-    const meetingHash = req.params.hash;
-    const commonTimes = await findCommonTimes(meetingHash);
-    res.status(200).json({ commonTimes });
+    const { commonTimes } = req.body;
+
+    if (!commonTimes || commonTimes.length === 0) {
+      return res.status(400).json({ error: 'No common times provided.' });
+    }
+
+    const zoomMeetingData = await createMeeting(commonTimes);
+
+    res.status(200).json(zoomMeetingData);
   } catch (err) {
-    console.error('Error finding common times:', err);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while finding common times.' });
+    console.error('Error creating Zoom meeting:', err);
+    res.status(500).json({ error: 'An error occurred while creating the Zoom meeting.' });
   }
 });
 
