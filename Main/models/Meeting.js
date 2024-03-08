@@ -5,11 +5,6 @@ class Meeting extends Model {}
 
 Meeting.init(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      autoIncrement: true,
-    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -36,6 +31,5 @@ Meeting.init(
     modelName: 'meeting',
   }
 );
-
 
 module.exports = Meeting;
