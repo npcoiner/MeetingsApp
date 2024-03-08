@@ -9,7 +9,7 @@ const authTokenUrl = 'https://zoom.us/oauth/token';
 const apiBaseUrl = 'https://api.zoom.us/v2';
 const createMeeting = async (commonTime) => {
   try {
-
+    
     const response = await axios.post(authTokenUrl, {
       grant_type: 'account_credentials',
       account_id: accountId,
@@ -33,11 +33,16 @@ const createMeeting = async (commonTime) => {
       'Content-Type': 'application/json',
     };
     const meetingStartTime = `${commonTime[0].date}T${commonTime[0].time.split(' ')[0].padStart(2, '0')}:00:00Z`;
+    console.log(meetingStartTime)
     const payload = {
       topic: 'My Meeting',
       duration: 60,
       start_time: meetingStartTime,
+      timezone: 'America/Los_Angeles',
       type: 2,
+      settings: {
+        waiting_room: 'True'
+      }
     };
 
 

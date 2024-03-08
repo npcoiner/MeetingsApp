@@ -109,18 +109,15 @@ function handleNextButtonClick() {
   generateCalendarColumns();
 }
 
-function getCurrentWeek() {
-  const startOfWeek = new Date(currentDate);
-  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-  return {
-    start: startOfWeek.toISOString().split('T')[0],
-    end: endOfWeek.toISOString().split('T')[0],
-  };
-}
+Date.prototype.yyyymmdd = function() {
+    var mm = this.getMonth() + 1;
+    var dd = this.getDate();
+  
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + mm,
+            (dd>9 ? '' : '0') + dd
+           ].join('-');
+};
 
 function getHighlightedSlots() {
   const highlightedSlots = [];
@@ -140,7 +137,7 @@ function getHighlightedSlots() {
     const time = timeElement.textContent.trim();
 
     highlightedSlots.push({
-      date: date.toISOString().split('T')[0],
+      date: date.yyyymmdd(),
       time: time,
     });
   });

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   generateCalendarColumns();
 });
 
-const currentDate = new Date(startDate);
+const currentDate = new Date(startDate.replace(/-/g, '\/').replace(/T.+/, ''));
 const calendarRow = document.getElementById('calendar-row');
 console.log(startDate);
 console.log(currentDate);
@@ -58,7 +58,7 @@ function generateCalendarColumns() {
       const time = timeElement.textContent.trim();
 
       const columnDate = new Date(currentDate);
-      columnDate.setDate(currentDate.getDate() + columnIndex);
+      columnDate.setDate(currentDate.getDate() + columnIndex - 1);
 
       const isAvailable = potentialTimes.some((slot) => {
         const slotDate = new Date(slot.date);
@@ -115,7 +115,15 @@ function generateCalendarColumns() {
     });
   });
 }
+Date.prototype.yyyymmdd = function() {
+  var mm = this.getMonth() + 1;
+  var dd = this.getDate();
 
+  return [this.getFullYear(),
+          (mm>9 ? '' : '0') + mm,
+          (dd>9 ? '' : '0') + dd
+         ].join('-');
+};
 function getHighlighted2Slots() {
   const highlightedSlots = [];
 
@@ -136,7 +144,7 @@ function getHighlighted2Slots() {
     const time = timeElement.textContent.trim();
 
     highlightedSlots.push({
-      date: date.toISOString().split('T')[0],
+      date: date.yyyymmdd(),
       time: time,
     });
   });

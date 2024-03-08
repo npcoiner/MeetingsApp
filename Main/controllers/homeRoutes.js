@@ -70,22 +70,21 @@ router.get('/meeting/:hash', async (req, res) => {
     });
     console.log(userMeetingData);
     const userIds = userMeetingData.map((userMeeting) => userMeeting.user_id);
-    console.log('userIds');
-    console.log(userIds);
+
     const potentialTimes = userMeetingData.reduce(
       (commonTimes, userMeeting) => {
         if (commonTimes.length === 0) {
-          return [...userMeeting.potential_times];
+          return userMeeting.potential_times;
         } else {
+          console.log(userMeeting.potential_times);
           return commonTimes.filter((commonTime) =>
             userMeeting.potential_times.some(
-              (time) =>
-                time.date === commonTime.date && time.time === commonTime.time,
-            ),
+              (time) => time.date === commonTime.date && time.time === commonTime.time
+            )
           );
         }
       },
-      [],
+      userMeetingData[0].potential_times
     );
 
     const userData = await User.findAll({
