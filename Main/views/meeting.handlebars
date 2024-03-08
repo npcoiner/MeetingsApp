@@ -1,6 +1,22 @@
 <div class="container">
   <h1>Meeting</h1>
   <h1 id="month"></h1>
+  
+  <div class="row">
+    <div class="col text-center">
+      <button id="toggle-participants-button" class="btn btn-primary">Show Participants</button>
+    </div>
+  </div>
+
+  <div id="participants-container" style="display: none;">
+    <h3>Participants</h3>
+    <ul>
+      {{#each users}}
+        <li>{{name}}</li>
+      {{/each}}
+    </ul>
+  </div>
+
   <div class="row" id="calendar-row">
     <!-- Columns for days of week/month will be dynamically generated here -->
   </div>

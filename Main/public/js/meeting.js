@@ -58,18 +58,16 @@ function generateCalendarColumns() {
       const columnDate = new Date(currentDate);
       columnDate.setDate(currentDate.getDate() + columnIndex);
 
-      const isAvailable = potentialTimes.some(userTimes =>
-        userTimes.some(slot => {
-          const slotDate = new Date(slot.date);
-          slotDate.setDate(slotDate.getDate());
-          return (
-            slotDate.getFullYear() === columnDate.getFullYear() &&
-            slotDate.getMonth() === columnDate.getMonth() &&
-            slotDate.getDate() === columnDate.getDate() &&
-            slot.time === time
-          );
-        })
-      );
+      const isAvailable = potentialTimes.some(slot => {
+        const slotDate = new Date(slot.date);
+        slotDate.setDate(slotDate.getDate());
+        return (
+          slotDate.getFullYear() === columnDate.getFullYear() &&
+          slotDate.getMonth() === columnDate.getMonth() &&
+          slotDate.getDate() === columnDate.getDate() &&
+          slot.time === time
+        );
+      });
 
       if (isAvailable) {
         row.classList.add('highlighted');
@@ -85,31 +83,109 @@ function generateCalendarColumns() {
     column.addEventListener('mouseleave', () => {
       const rowList = column.querySelector('.row-list');
       if (!rowList.querySelector('.highlighted')) {
-        rowList.style.display = 'none';
+        if (!rowList.querySelector('.highlighted2')) {
+          rowList.style.display = 'none';
+        }
       }
     });
   });
 
   const rows = document.querySelectorAll('.row-list .row');
   let isDragging = false;
-  let highlight = false;
+  let highlight2 = false;
 
   rows.forEach(row => {
     row.addEventListener('mousedown', (event) => {
       isDragging = true;
-      highlight = !row.classList.contains('highlighted');
-      row.classList.toggle('highlighted');
+      highlight2 = !row.classList.contains('highlighted2');
+      row.classList.toggle('highlighted2');
     });
 
     row.addEventListener('mousemove', (event) => {
       if (isDragging) {
-        row.classList.toggle('highlighted', highlight);
+        row.classList.toggle('highlighted2', highlight2);
       }
     });
 
     row.addEventListener('mouseup', () => {
       isDragging = false;
-      highlight = false;
+      highlight2 = false;
     });
   });
 }
+
+function getHighlighted2Slots() {
+  const highlightedSlots = [];
+
+  const highlightedRows = document.querySelectorAll('.row.highlighted2');
+  highlightedRows.forEach(row => {
+      const dayElement = row.closest('.col-auto');
+      const dayIndex = Array.from(dayElement.parentNode.children).indexOf(dayElement);
+      
+      const date = new Date();
+      date.setDate(currentDate.getDate());
+
+      console.log(date.getDate() + dayIndex);
+      date.setDate(date.getDate() + dayIndex);
+      console.log(date);
+      const timeElement = row.querySelector('.time');
+      const time = timeElement.textContent.trim();
+
+      highlightedSlots.push({
+          date: date.toISOString().split('T')[0],
+          time: time
+      });
+  });
+
+  return highlightedSlots;
+}
+
+
+document.getElementById('update-availability-button').addEventListener('click', async function() {
+  var name = prompt('Please enter your name:');
+  if (name) {
+      const highlightedSlots = getHighlighted2Slots();
+
+      const meetingHash = window.location.pathname.split('/').pop();
+
+      const userData = {
+          name: name,
+          meeting_hash: meetingHash,
+          potential_times: highlightedSlots,
+      };
+
+      try {
+          const response = await fetch('/api/users/update-availability', {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(userData)
+          });
+
+          if (response.ok) {
+              alert('Availability updated successfully!');
+              location.reload(); // Reload the page to reflect the updated availability
+          } else {
+              console.error('Failed to update availability');
+              alert('An error occurred while updating availability.');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while updating availability. Please try again.');
+      }
+  } else {
+      alert('Please enter your name to update availability.');
+  }
+});
+
+document.getElementById('toggle-participants-button').addEventListener('click', function() {
+  var participantsContainer = document.getElementById('participants-container');
+  if (participantsContainer.style.display === 'none') {
+    participantsContainer.style.display = 'block';
+    this.textContent = 'Hide Participants';
+  } else {
+    participantsContainer.style.display = 'none';
+    this.textContent = 'Show Participants';
+  }
+});

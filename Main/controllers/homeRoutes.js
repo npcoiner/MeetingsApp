@@ -70,16 +70,35 @@ router.get('/meeting/:hash', async (req, res) => {
     });
     console.log(userMeetingData);
     const userIds = userMeetingData.map(userMeeting => userMeeting.user_id);
-    const potentialTimes = userMeetingData.map(userMeeting => userMeeting.potential_times);
+    console.log("userIds");
+    console.log(userIds);
+    const potentialTimes = userMeetingData.reduce((commonTimes, userMeeting) => {
+      if (commonTimes.length === 0) {
+        return [...userMeeting.potential_times];
+      } else {
+        return commonTimes.filter(commonTime =>
+          userMeeting.potential_times.some(time =>
+            time.date === commonTime.date && time.time === commonTime.time
+          )
+        );
+      }
+    }, []);
     
+
     const userData = await User.findAll({
       where: { id: userIds },
       attributes: ['id', 'name'],
     });
-    
+
+    const compatibleUserData = userData.map(user => user.get({ plain: true }));
+    console.log("potentialTimes")
+
+    console.log(potentialTimes)
+
+
     res.render('meeting', {
       ...meetingData.get({ plain: true }),
-      users: userData,
+      users: compatibleUserData,
       potentialTimes: JSON.stringify(potentialTimes),
       startDate: meetingData.start_date,
       logged_in: req.session.logged_in,
