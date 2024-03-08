@@ -8,7 +8,6 @@ Meeting.init(
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       autoIncrement: true,
     },
     title: {
@@ -26,6 +25,7 @@ Meeting.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      primaryKey: true,
     },
   },
   {
