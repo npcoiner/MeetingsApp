@@ -10,8 +10,7 @@ const generateHash = () => {
 
 router.post('/', withAuth, async (req, res) => {
   try {
-    const { title, description, potential_times } = req.body;
-    const start_date = potential_times[0].date;
+    const { title, description, potential_times, start_date } = req.body;
     const hash = generateHash();
 
     const meetingData = await Meeting.create({

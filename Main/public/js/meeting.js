@@ -61,6 +61,7 @@ function generateCalendarColumns() {
       const isAvailable = potentialTimes.some(userTimes =>
         userTimes.some(slot => {
           const slotDate = new Date(slot.date);
+          slotDate.setDate(slotDate.getDate());
           return (
             slotDate.getFullYear() === columnDate.getFullYear() &&
             slotDate.getMonth() === columnDate.getMonth() &&

@@ -128,9 +128,12 @@ function getHighlightedSlots() {
     const highlightedRows = document.querySelectorAll('.row.highlighted');
     highlightedRows.forEach(row => {
         const dayElement = row.closest('.col-auto');
+        const dayIndex = Array.from(dayElement.parentNode.children).indexOf(dayElement);
+        
         const date = new Date(currentDate);
-        date.setDate(currentDate.getDate() + Array.from(dayElement.parentNode.children).indexOf(dayElement));
-
+        console.log(date.getDate() + dayIndex);
+        date.setDate(date.getDate() + dayIndex);
+        console.log(date);
         const timeElement = row.querySelector('.time');
         const time = timeElement.textContent.trim();
 
@@ -147,11 +150,15 @@ document.getElementById('create-meeting-button').addEventListener('click', async
     var name = prompt('Please enter your name:');
     if (name) {
         const highlightedSlots = getHighlightedSlots();
+
+        const startDate = highlightedSlots[0].date;
+        console.log("PLEASEE:")
         console.log(highlightedSlots);
         const meetingData = {
             title: 'New Meeting',
             description: 'Meeting description',
             potential_times: highlightedSlots,
+            start_date: startDate,
         };
 
         try {
