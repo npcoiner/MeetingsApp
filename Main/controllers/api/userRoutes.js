@@ -3,27 +3,32 @@ const { User, UserMeeting } = require('../../models');
 
 router.post('/', async (req, res) => {
   try {
-      const { name, meeting_hash, potential_times } = req.body;
+    const { name, meeting_hash, potential_times } = req.body;
 
-      // Create the user
-      const userData = await User.create({ name });
-      console.log(potential_times);
-      console.log(userData.id);
-      console.log(meeting_hash);
-      // Associate the user with the meeting
-      const userMeetingData = await UserMeeting.create({
-          user_id: userData.id,
-          meeting_hash,
-          potential_times,
-      });
-      console.log(userMeetingData);
+    // Create the user
+    const userData = await User.create({ name });
+    console.log(potential_times);
+    console.log(userData.id);
+    console.log(meeting_hash);
+    // Associate the user with the meeting
+    const userMeetingData = await UserMeeting.create({
+      user_id: userData.id,
+      meeting_hash,
+      potential_times,
+    });
+    console.log(userMeetingData);
 
-      res.status(200).json(userData);
+    res.status(200).json(userData);
   } catch (err) {
     console.error('Error creating user meeting:', err);
     console.error('Error details:', err.message);
     console.error('Error stack trace:', err.stack);
-    res.status(400).json({ error: 'An error occurred while creating the user meeting.', details: err.message });
+    res
+      .status(400)
+      .json({
+        error: 'An error occurred while creating the user meeting.',
+        details: err.message,
+      });
   }
 });
 
@@ -65,7 +70,9 @@ router.put('/update-availability', async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.error('Error updating availability:', err);
-    res.status(500).json({ error: 'An error occurred while updating availability.' });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while updating availability.' });
   }
 });
 
@@ -92,10 +99,9 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.user_id = userData.id;
       req.session.logged_in = true;
-      
+
       res.json({ user: userData, message: 'You are now logged in!' });
     });
-
   } catch (err) {
     res.status(400).json(err);
   }

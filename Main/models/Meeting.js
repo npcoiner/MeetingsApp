@@ -29,7 +29,7 @@ Meeting.init(
     freezeTableName: true,
     underscored: true,
     modelName: 'meeting',
-  }
+  },
 );
 
 module.exports = Meeting;

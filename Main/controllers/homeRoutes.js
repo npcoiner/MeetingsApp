@@ -19,10 +19,10 @@ router.get('/', async (req, res) => {
     const meetings = meetingData.map((meeting) => meeting.get({ plain: true }));
 
     // Pass serialized data and session flag into template
-    res.render('homepage', { 
-      meetings, 
+    res.render('homepage', {
+      meetings,
       logged_in: req.session.logged_in,
-      cssFile: 'style.css'
+      cssFile: 'style.css',
     });
   } catch (err) {
     res.status(500).json(err);
@@ -44,10 +44,10 @@ router.get('/v2', async (req, res) => {
     // Serialize data so the template can read it
     const meetings = meetingData.map((meeting) => meeting.get({ plain: true }));
     // Pass serialized data and session flag into template
-    res.render('homepagev2', { 
-      meetings, 
-      logged_in: req.session.logged_in ,
-      cssFile: 'style2.css' 
+    res.render('homepagev2', {
+      meetings,
+      logged_in: req.session.logged_in,
+      cssFile: 'style2.css',
     });
   } catch (err) {
     res.status(500).json(err);
@@ -69,32 +69,36 @@ router.get('/meeting/:hash', async (req, res) => {
       attributes: ['user_id', 'potential_times'],
     });
     console.log(userMeetingData);
-    const userIds = userMeetingData.map(userMeeting => userMeeting.user_id);
-    console.log("userIds");
+    const userIds = userMeetingData.map((userMeeting) => userMeeting.user_id);
+    console.log('userIds');
     console.log(userIds);
-    const potentialTimes = userMeetingData.reduce((commonTimes, userMeeting) => {
-      if (commonTimes.length === 0) {
-        return [...userMeeting.potential_times];
-      } else {
-        return commonTimes.filter(commonTime =>
-          userMeeting.potential_times.some(time =>
-            time.date === commonTime.date && time.time === commonTime.time
-          )
-        );
-      }
-    }, []);
-    
+    const potentialTimes = userMeetingData.reduce(
+      (commonTimes, userMeeting) => {
+        if (commonTimes.length === 0) {
+          return [...userMeeting.potential_times];
+        } else {
+          return commonTimes.filter((commonTime) =>
+            userMeeting.potential_times.some(
+              (time) =>
+                time.date === commonTime.date && time.time === commonTime.time,
+            ),
+          );
+        }
+      },
+      [],
+    );
 
     const userData = await User.findAll({
       where: { id: userIds },
       attributes: ['id', 'name'],
     });
 
-    const compatibleUserData = userData.map(user => user.get({ plain: true }));
-    console.log("potentialTimes")
+    const compatibleUserData = userData.map((user) =>
+      user.get({ plain: true }),
+    );
+    console.log('potentialTimes');
 
-    console.log(potentialTimes)
-
+    console.log(potentialTimes);
 
     res.render('meeting', {
       ...meetingData.get({ plain: true }),
@@ -106,7 +110,11 @@ router.get('/meeting/:hash', async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching meeting:', err);
-    res.status(500).render('500', { error: 'An error occurred while fetching the meeting.' });
+    res
+      .status(500)
+      .render('500', {
+        error: 'An error occurred while fetching the meeting.',
+      });
   }
 });
 
@@ -124,7 +132,7 @@ router.get('/profile', withAuth, async (req, res) => {
     res.render('profile', {
       ...user,
       logged_in: true,
-      cssFile: 'style.css'
+      cssFile: 'style.css',
     });
   } catch (err) {
     res.status(500).json(err);
@@ -139,7 +147,7 @@ router.get('/login', (req, res) => {
   }
 
   res.render('login', {
-    cssFile: 'style.css'
+    cssFile: 'style.css',
   });
 });
 

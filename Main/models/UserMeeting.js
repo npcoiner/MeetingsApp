@@ -34,7 +34,7 @@ UserMeeting.init(
     freezeTableName: true,
     underscored: true,
     modelName: 'user_meeting',
-  }
+  },
 );
 
 module.exports = UserMeeting;

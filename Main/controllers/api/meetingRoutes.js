@@ -7,7 +7,6 @@ const generateHash = () => {
   return crypto.randomBytes(20).toString('hex');
 };
 
-
 router.post('/', withAuth, async (req, res) => {
   try {
     const { title, description, potential_times, start_date } = req.body;
@@ -25,7 +24,9 @@ router.post('/', withAuth, async (req, res) => {
     res.status(200).json(meetingData);
   } catch (err) {
     console.error('Error creating meeting:', err);
-    res.status(500).json({ error: 'An error occurred while creating the meeting.' });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while creating the meeting.' });
   }
 });
 
@@ -36,7 +37,9 @@ router.get('/:hash/common-times', async (req, res) => {
     res.status(200).json({ commonTimes });
   } catch (err) {
     console.error('Error finding common times:', err);
-    res.status(500).json({ error: 'An error occurred while finding common times.' });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while finding common times.' });
   }
 });
 

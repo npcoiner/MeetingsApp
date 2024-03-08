@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-    generateCalendarColumns();
+document.addEventListener('DOMContentLoaded', function () {
+  generateCalendarColumns();
 });
 
 // Get the current date
@@ -12,23 +12,23 @@ const calendarRow = document.getElementById('calendar-row');
 const prevButton = document.getElementById('prev-button');
 const nextButton = document.getElementById('next-button');
 function updateMonthHeader() {
-    const monthElement = document.getElementById('month');
-    const monthName = currentDate.toLocaleDateString('en-US', { month: 'short' });
-    monthElement.textContent = `${monthName}`;
+  const monthElement = document.getElementById('month');
+  const monthName = currentDate.toLocaleDateString('en-US', { month: 'short' });
+  monthElement.textContent = `${monthName}`;
 }
 // Function to generate the calendar columns
 function generateCalendarColumns() {
-    calendarRow.innerHTML = '';
-    updateMonthHeader()
-    // Generate columns for the next 7 days
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(currentDate);
-        date.setDate(currentDate.getDate() + i);
+  calendarRow.innerHTML = '';
+  updateMonthHeader();
+  // Generate columns for the next 7 days
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() + i);
 
-        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-        const dayDate = date.getDate();
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+    const dayDate = date.getDate();
 
-        const columnHtml = `
+    const columnHtml = `
             <div class="col-auto">
                 <div class="column-content">
                     <div class="day-date">${dayDate}</div>
@@ -52,165 +52,173 @@ function generateCalendarColumns() {
             </div>
         `;
 
-        calendarRow.innerHTML += columnHtml;
-    }
+    calendarRow.innerHTML += columnHtml;
+  }
 
-    const columnContent = document.querySelectorAll('.column-content');
-    columnContent.forEach(column => {
-        column.addEventListener('mouseenter', () => {
-            column.querySelector('.row-list').style.display = 'flex';
-        });
-
-        column.addEventListener('mouseleave', () => {
-            const rowList = column.querySelector('.row-list');
-            if (!rowList.querySelector('.highlighted')) {
-                rowList.style.display = 'none';
-            }
-        });
+  const columnContent = document.querySelectorAll('.column-content');
+  columnContent.forEach((column) => {
+    column.addEventListener('mouseenter', () => {
+      column.querySelector('.row-list').style.display = 'flex';
     });
 
-    const rows = document.querySelectorAll('.row-list .row');
-    let isDragging = false;
-    let highlight = false;
+    column.addEventListener('mouseleave', () => {
+      const rowList = column.querySelector('.row-list');
+      if (!rowList.querySelector('.highlighted')) {
+        rowList.style.display = 'none';
+      }
+    });
+  });
 
-    rows.forEach(row => {
-        row.addEventListener('mousedown', (event) => {
-            isDragging = true;
-            highlight = !row.classList.contains('highlighted');
-            row.classList.toggle('highlighted');
-        });
+  const rows = document.querySelectorAll('.row-list .row');
+  let isDragging = false;
+  let highlight = false;
 
-        row.addEventListener('mousemove', (event) => {
-            if (isDragging) {
-                row.classList.toggle('highlighted', highlight);
-            }
-        });
-
-        row.addEventListener('mouseup', () => {
-            isDragging = false;
-            highlight = false;
-        });
+  rows.forEach((row) => {
+    row.addEventListener('mousedown', (event) => {
+      isDragging = true;
+      highlight = !row.classList.contains('highlighted');
+      row.classList.toggle('highlighted');
     });
 
-    prevButton.removeEventListener('click', handlePrevButtonClick);
-    nextButton.removeEventListener('click', handleNextButtonClick);
+    row.addEventListener('mousemove', (event) => {
+      if (isDragging) {
+        row.classList.toggle('highlighted', highlight);
+      }
+    });
 
-    prevButton.addEventListener('click', handlePrevButtonClick);
-    nextButton.addEventListener('click', handleNextButtonClick);
+    row.addEventListener('mouseup', () => {
+      isDragging = false;
+      highlight = false;
+    });
+  });
+
+  prevButton.removeEventListener('click', handlePrevButtonClick);
+  nextButton.removeEventListener('click', handleNextButtonClick);
+
+  prevButton.addEventListener('click', handlePrevButtonClick);
+  nextButton.addEventListener('click', handleNextButtonClick);
 }
 
 function handlePrevButtonClick() {
-    currentDate.setDate(currentDate.getDate() - 7);
-    generateCalendarColumns();
+  currentDate.setDate(currentDate.getDate() - 7);
+  generateCalendarColumns();
 }
 
 function handleNextButtonClick() {
-    currentDate.setDate(currentDate.getDate() + 7);
-    generateCalendarColumns();
+  currentDate.setDate(currentDate.getDate() + 7);
+  generateCalendarColumns();
 }
 
 function getCurrentWeek() {
-    const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+  const startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
 
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-    return {
-        start: startOfWeek.toISOString().split('T')[0],
-        end: endOfWeek.toISOString().split('T')[0]
-    };
+  return {
+    start: startOfWeek.toISOString().split('T')[0],
+    end: endOfWeek.toISOString().split('T')[0],
+  };
 }
 
 function getHighlightedSlots() {
-    const highlightedSlots = [];
+  const highlightedSlots = [];
 
-    const highlightedRows = document.querySelectorAll('.row.highlighted');
-    highlightedRows.forEach(row => {
-        const dayElement = row.closest('.col-auto');
-        const dayIndex = Array.from(dayElement.parentNode.children).indexOf(dayElement);
-        
-        const date = new Date(currentDate);
-        console.log(date.getDate() + dayIndex);
-        date.setDate(date.getDate() + dayIndex);
-        console.log(date);
-        const timeElement = row.querySelector('.time');
-        const time = timeElement.textContent.trim();
+  const highlightedRows = document.querySelectorAll('.row.highlighted');
+  highlightedRows.forEach((row) => {
+    const dayElement = row.closest('.col-auto');
+    const dayIndex = Array.from(dayElement.parentNode.children).indexOf(
+      dayElement,
+    );
 
-        highlightedSlots.push({
-            date: date.toISOString().split('T')[0],
-            time: time
-        });
+    const date = new Date(currentDate);
+    console.log(date.getDate() + dayIndex);
+    date.setDate(date.getDate() + dayIndex);
+    console.log(date);
+    const timeElement = row.querySelector('.time');
+    const time = timeElement.textContent.trim();
+
+    highlightedSlots.push({
+      date: date.toISOString().split('T')[0],
+      time: time,
     });
+  });
 
-    return highlightedSlots;
+  return highlightedSlots;
 }
 
-document.getElementById('create-meeting-button').addEventListener('click', async function() {
+document
+  .getElementById('create-meeting-button')
+  .addEventListener('click', async function () {
     var name = prompt('Please enter your name:');
     if (name) {
-        const highlightedSlots = getHighlightedSlots();
+      const highlightedSlots = getHighlightedSlots();
 
-        const startDate = highlightedSlots[0].date;
-        console.log("PLEASEE:")
-        console.log(highlightedSlots);
-        const meetingData = {
-            title: 'New Meeting',
-            description: 'Meeting description',
+      const startDate = highlightedSlots[0].date;
+      console.log('PLEASEE:');
+      console.log(highlightedSlots);
+      const meetingData = {
+        title: 'New Meeting',
+        description: 'Meeting description',
+        potential_times: highlightedSlots,
+        start_date: startDate,
+      };
+
+      try {
+        const response = await fetch('/api/meetings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(meetingData),
+        });
+        if (response.ok) {
+          const createdMeeting = await response.json();
+          const meetingId = createdMeeting.hash;
+
+          const userData = {
+            name: name,
+            meeting_hash: meetingId,
             potential_times: highlightedSlots,
-            start_date: startDate,
-        };
+          };
 
-        try {
-            const response = await fetch('/api/meetings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(meetingData)
-            });
-            if (response.ok) {
-                const createdMeeting = await response.json();
-                const meetingId = createdMeeting.hash;
+          const userResponse = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+          });
 
-                const userData = {
-                    name: name,
-                    meeting_hash: meetingId,
-                    potential_times: highlightedSlots,
-                };
+          if (userResponse.ok) {
+            // Generate the shareable meeting link
+            const meetingLink = `${window.location.origin}/meeting/${meetingId}`;
 
-                const userResponse = await fetch('/api/users', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userData)
-                });
+            // Display the meeting link to the user
+            alert(
+              `Meeting created successfully! Share this link: ${meetingLink}`,
+            );
 
-                if (userResponse.ok) {
-                    // Generate the shareable meeting link
-                    const meetingLink = `${window.location.origin}/meeting/${meetingId}`;
-
-                    // Display the meeting link to the user
-                    alert(`Meeting created successfully! Share this link: ${meetingLink}`);
-
-                    // Redirect the user to the meeting page
-                    document.location.replace('/meeting/' + meetingId);
-                } else {
-                    // Handle error response for user creation
-                    console.error('Failed to create user');
-                    alert('An error occurred while creating the user.');
-                }
-            } else {
-                // Handle error response for meeting creation
-                console.error('Failed to create meeting');
-                alert('Please login');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while creating the meeting. Please try again.');
+            // Redirect the user to the meeting page
+            document.location.replace('/meeting/' + meetingId);
+          } else {
+            // Handle error response for user creation
+            console.error('Failed to create user');
+            alert('An error occurred while creating the user.');
+          }
+        } else {
+          // Handle error response for meeting creation
+          console.error('Failed to create meeting');
+          alert('Please login');
         }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(
+          'An error occurred while creating the meeting. Please try again.',
+        );
+      }
     } else {
-        alert('Please enter your name to create a meeting.');
+      alert('Please enter your name to create a meeting.');
     }
-});
+  });
