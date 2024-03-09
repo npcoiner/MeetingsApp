@@ -34,7 +34,7 @@ function generateCalendarColumns() {
             <div class="row"><div class="time">9 AM</div></div>
             <div class="row"><div class="time">10 AM</div></div>
             <div class="row"><div class="time">11 AM</div></div>
-            <div class="row"><div class="time">12 AM</div></div>
+            <div class="row"><div class="time">12 PM</div></div>
             <div class="row"><div class="time">1 PM</div></div>
             <div class="row"><div class="time">2 PM</div></div>
             <div class="row"><div class="time">3 PM</div></div>
