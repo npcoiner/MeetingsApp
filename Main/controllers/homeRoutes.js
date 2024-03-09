@@ -105,7 +105,7 @@ router.get('/meeting/:hash', async (req, res) => {
       potentialTimes: JSON.stringify(potentialTimes),
       startDate: meetingData.start_date,
       logged_in: req.session.logged_in,
-      cssFile: 'style2.css',
+      cssFile: 'style2meeting.css',
     });
   } catch (err) {
     console.error('Error fetching meeting:', err);

@@ -115,6 +115,7 @@ function generateCalendarColumns() {
     });
   });
 }
+
 Date.prototype.yyyymmdd = function() {
   var mm = this.getMonth() + 1;
   var dd = this.getDate();
@@ -155,42 +156,48 @@ function getHighlighted2Slots() {
 document
   .getElementById('update-availability-button')
   .addEventListener('click', async function () {
-    var name = prompt('Please enter your name:');
-    if (name) {
-      const highlightedSlots = getHighlighted2Slots();
+    const highlightedSlots = getHighlighted2Slots();
+    if(highlightedSlots.length !== 0){
+      var name = prompt('Please enter your name:');
+      console.log(highlightedSlots)
+      if (name) {
 
-      const meetingHash = window.location.pathname.split('/').pop();
+        const meetingHash = window.location.pathname.split('/').pop();
 
-      const userData = {
-        name: name,
-        meeting_hash: meetingHash,
-        potential_times: highlightedSlots,
-      };
+        const userData = {
+          name: name,
+          meeting_hash: meetingHash,
+          potential_times: highlightedSlots,
+        };
 
-      try {
-        const response = await fetch('/api/users/update-availability', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData),
-        });
+        try {
+          const response = await fetch('/api/users/update-availability', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+          });
 
-        if (response.ok) {
-          alert('Availability updated successfully!');
-          location.reload(); // Reload the page to reflect the updated availability
-        } else {
-          console.error('Failed to update availability');
-          alert('An error occurred while updating availability.');
+          if (response.ok) {
+            alert('Availability updated successfully!');
+            location.reload(); // Reload the page to reflect the updated availability
+          } else {
+            console.error('Failed to update availability');
+            alert('An error occurred while updating availability.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(
+            'An error occurred while updating availability. Please try again.',
+          );
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert(
-          'An error occurred while updating availability. Please try again.',
-        );
+      } else {
+        alert('Please enter your name to update availability.');
       }
-    } else {
-      alert('Please enter your name to update availability.');
+    }
+    else {
+      alert('Please select time slots to add availability.');
     }
   });
 

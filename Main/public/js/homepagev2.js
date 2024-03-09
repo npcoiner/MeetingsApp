@@ -100,12 +100,12 @@ function generateCalendarColumns() {
 }
 
 function handlePrevButtonClick() {
-  currentDate.setDate(currentDate.getDate() - 7);
+  currentDate.setDate(currentDate.getDate() - 1);
   generateCalendarColumns();
 }
 
 function handleNextButtonClick() {
-  currentDate.setDate(currentDate.getDate() + 7);
+  currentDate.setDate(currentDate.getDate() + 1);
   generateCalendarColumns();
 }
 
