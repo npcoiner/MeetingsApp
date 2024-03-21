@@ -148,9 +148,11 @@ function getHighlightedSlots() {
 document
   .getElementById('create-meeting-button')
   .addEventListener('click', async function () {
-    var name = prompt('Please enter your name:');
+    const highlightedSlots = getHighlightedSlots();
+    if(highlightedSlots.length !== 0){
+      var name = prompt('Please enter your name:');
     if (name) {
-      const highlightedSlots = getHighlightedSlots();
+      
 
       const startDate = highlightedSlots[0].date;
       console.log('PLEASEE:');
@@ -218,4 +220,9 @@ document
     } else {
       alert('Please enter your name to create a meeting.');
     }
+    }
+    else {
+      alert('Please select time slots for the meeting.');
+    }
+    
   });
