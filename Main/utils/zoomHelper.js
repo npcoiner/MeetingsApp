@@ -3,7 +3,7 @@ const axios = require('axios');
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
-const accountId = process.env.ACCOUNT_ID;
+const accountId = 'TbTcL7XPQXKGlmrIlvjOrQ';
 
 const authTokenUrl = 'https://zoom.us/oauth/token';
 const apiBaseUrl = 'https://api.zoom.us/v2';
